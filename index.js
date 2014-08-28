@@ -6,10 +6,56 @@ var Promise = require('promise');
 var path = require('path');
 var md5 = require('MD5');
 
+var compiler = function (href, callback) {
+	var Browser = require("zombie"),
+	    browser = Browser.create({
+	    	silent: true,
+	    	maxWait: 60,
+	    	loadCSS: false
+	    });
+
+	browser.visit(href, function (error) {
+		function loaded (window) {
+			return !window.EmailGenerator.Router.router.activeTransition;
+		};
+
+		function waitForLoaded() {
+			if (browser.evaluate('EmailGenerator.Router.router.activeTransition')) {
+				browser.wait(loaded, waitForLoaded);
+			} else {
+				parseHTML(href, browser.html(), callback);
+			}
+		};
+
+		waitForLoaded();
+	});
+
+
+	// var phantomjs = require('phantomjs');
+	// var binPath = phantomjs.path;
+	// var childProcess = require('child_process');
+
+	// var childArgs = [
+	//   path.join(__dirname, 'html.js'),
+	//   href
+	// ];
+
+	// childProcess.execFile(binPath, childArgs, function (err, html) {
+	// 	parseHTML(href, html, callback);
+	// });
+
+};
+
 var parseHTML = function (href, html, callback) {
 	var css = [],
 	    html = jsdom(html),
-	    cssSources = html.querySelectorAll('link[rel=stylesheet],style,link[type="text/css"]');
+	    cssSources = html.querySelectorAll('link[rel=stylesheet],style,link[type="text/css"]'),
+	    base = html.querySelector('base'),
+	    baseHref = href;
+
+	if (base) {
+		baseHref = url.resolve(href, base.getAttribute('href'));
+	}
 
 	Promise.all(
 		Array.prototype.map.call(cssSources, function (cssSource) {
@@ -18,7 +64,7 @@ var parseHTML = function (href, html, callback) {
 					resolve(cssSource.innerText || '');
 				} else if (cssSource.tagName === 'LINK') {
 					request({
-						url: url.resolve(href, cssSource.href),
+						url: url.resolve(baseHref, cssSource.href),
 						gzip: true
 					}, function (err, response) {
 						if (!err) {
@@ -96,31 +142,5 @@ var parseHTML = function (href, html, callback) {
 };
 
 
-module.exports = function (href, callback) {
-	var Browser = require("zombie"),
-	    browser = Browser.create({
-	    	silent: true
-	    });
-
-	browser.visit(href, function (error) {
-		browser.wait(function () {
-			parseHTML(href, browser.html(), callback);
-		});
-	});
-
-
-	// var phantomjs = require('phantomjs');
-	// var binPath = phantomjs.path;
-	// var childProcess = require('child_process');
-
-	// var childArgs = [
-	//   path.join(__dirname, 'html.js'),
-	//   href
-	// ];
-
-	// childProcess.execFile(binPath, childArgs, function (err, html) {
-	// 	parseHTML(href, html, callback);
-	// });
-
-};
+module.exports = compiler;
 
