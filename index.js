@@ -134,7 +134,7 @@ var parseHTML = function (href, html, callback) {
 
 		html = html.documentElement.outerHTML;
 
-		callback({
+		callback(undefined, {
 			html: html,
 			attachments: attachments
 		});
