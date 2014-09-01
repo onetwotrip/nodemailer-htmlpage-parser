@@ -10,22 +10,28 @@ var compiler = function (href, callback) {
 	var Browser = require("zombie"),
 	    browser = Browser.create({
 	    	silent: true,
-	    	maxWait: 60,
+	    	maxWait: 30,
 	    	loadCSS: false
 	    });
 
 	browser.visit(href, function (error) {
+		if(error){
+			console.log('ERROR_COMPILER', error);
+			callback('ERROR');
+			return;
+		}
+
 		function loaded (window) {
 			return !window.EmailGenerator.Router.router.activeTransition;
-		};
+		}
 
-		function waitForLoaded() {
+		function waitForLoaded () {
 			if (browser.evaluate('EmailGenerator.Router.router.activeTransition')) {
 				browser.wait(loaded, waitForLoaded);
 			} else {
 				parseHTML(href, browser.html(), callback);
 			}
-		};
+		}
 
 		waitForLoaded();
 	});
