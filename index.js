@@ -81,7 +81,7 @@ var parseHTML = function (href, html, callback) {
 	).then(function (css) {
 		css = css.join(' ');
 
-		Array.prototype.forEach.call(html.querySelectorAll('script'), function (el) {
+		Array.prototype.forEach.call(html.querySelectorAll('script[type="text/javascript"], script[src]'), function (el) {
 			el.parentNode.removeChild(el);
 		});
 
