@@ -4,8 +4,7 @@
   "description": "Insanely fast, full-stack, headless browser testing using Node.js",
   "homepage": "http://zombie.labnotes.org/",
   "author": "Assaf Arkin <assaf@labnotes.org> (http://labnotes.org/)",
-  "keywords": [
-  ],
+  "keywords": [],
   "repository": {
     "type": "git",
     "url": "https://bitbucket.org/OneTwoTrip/nodemailer-htmlpage-compiler"
@@ -14,8 +13,8 @@
     "MD5": "^1.2.1",
     "jsdom": "^1.0.0-pre.3",
     "juice": "^0.4.0",
+    "phantomjs": "^1.9.7-15",
     "promise": "^5.0.0",
-    "request": "^2.40.0",
-    "zombie": "^2.0.0-alpha31"
+    "request": "^2.40.0"
   }
 }

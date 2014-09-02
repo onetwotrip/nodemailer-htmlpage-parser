@@ -7,49 +7,22 @@ var path = require('path');
 var md5 = require('MD5');
 
 var compiler = function (href, callback) {
-	var Browser = require("zombie"),
-	    browser = Browser.create({
-	    	silent: true,
-	    	maxWait: 30,
-	    	loadCSS: false
-	    });
+	var phantomjs = require('phantomjs');
+	var binPath = phantomjs.path;
+	var childProcess = require('child_process');
 
-	browser.visit(href, function (error) {
-		if(error){
-			console.log('ERROR_COMPILER', error);
-			callback('ERROR');
-			return;
+	var childArgs = [
+		path.join(__dirname, 'html.js'),
+		href
+	];
+
+	childProcess.execFile(binPath, childArgs, function (err, html) {
+		if (!err && html) {
+			parseHTML(href, html, callback);
+		} else {
+			callback(err);
 		}
-
-		function loaded (window) {
-			return !window.EmailGenerator.Router.router.activeTransition;
-		}
-
-		function waitForLoaded () {
-			if (browser.evaluate('EmailGenerator.Router.router.activeTransition')) {
-				browser.wait(loaded, waitForLoaded);
-			} else {
-				parseHTML(href, browser.html(), callback);
-			}
-		}
-
-		waitForLoaded();
 	});
-
-
-	// var phantomjs = require('phantomjs');
-	// var binPath = phantomjs.path;
-	// var childProcess = require('child_process');
-
-	// var childArgs = [
-	//   path.join(__dirname, 'html.js'),
-	//   href
-	// ];
-
-	// childProcess.execFile(binPath, childArgs, function (err, html) {
-	// 	parseHTML(href, html, callback);
-	// });
-
 };
 
 var parseHTML = function (href, html, callback) {
