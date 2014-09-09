@@ -12,7 +12,7 @@ cat <<- "EOF" > .git/hooks/commit-msg
 	COMMIT_EDITMSG=$1
 
 	addBranchName() {
-	  NAME=$(git branch | grep '*' | sed 's/* //')
+	  NAME=$(git branch | grep '*' | sed 's/* //' | sed 's/\([A-Z]\+-[0-9]\+\).*/\1 v1/')
 	  DESCRIPTION=$(git config branch."$NAME".description)
 	  echo "$NAME: $(cat $COMMIT_EDITMSG)" > $COMMIT_EDITMSG
 	  if [ -n "$DESCRIPTION" ]
