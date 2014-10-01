@@ -30,7 +30,8 @@ var parseHTML = function (href, html, callback) {
 	    html = jsdom(html),
 	    cssSources = html.querySelectorAll('link[rel=stylesheet],style,link[type="text/css"]'),
 	    base = html.querySelector('base'),
-	    baseHref = href;
+	    baseHref = href,
+		title = '';
 
 	if (base) {
 		baseHref = url.resolve(href, base.getAttribute('href'));
@@ -111,15 +112,16 @@ var parseHTML = function (href, html, callback) {
 			el.setAttribute('src', 'cid:' + attach(image));
 		});
 
+		title = html.title || '';
 		html = html.documentElement.outerHTML;
 
 		callback(undefined, {
 			html: html,
-			attachments: attachments
+			attachments: attachments,
+			title: title
 		});
 	});
 };
-
 
 module.exports = compiler;
 
