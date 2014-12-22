@@ -18,3 +18,5 @@ testem.log
 .DS_Store
 test.*
 .idea/
+
+inithooks.sh
