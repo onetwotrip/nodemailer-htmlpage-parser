@@ -7,8 +7,6 @@ var path = require('path');
 var md5 = require('MD5');
 
 var compiler = function (href, callback) {
-	var phantomjs = require('phantomjs');
-	var binPath = phantomjs.path;
 	var childProcess = require('child_process');
 
 	var childArgs = [
@@ -16,7 +14,7 @@ var compiler = function (href, callback) {
 		href
 	];
 
-	childProcess.execFile(binPath, childArgs, function (err, html) {
+	childProcess.execFile('phantomjs', childArgs, function (err, html) {
 		if (!err && html) {
 			parseHTML(href, html, callback);
 		} else {
