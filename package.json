@@ -1,6 +1,6 @@
 {
   "name": "nodemailer-htmlpage-compiler",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Create nodemailer config from html page",
   "homepage": "https://github.com/onetwotrip/nodemailer-htmlpage-parser",
   "author": "Marat Dyatko",
